@@ -1,4 +1,4 @@
-package com.anibalofice.megasenav2.ui.theme
+package com.anibalofice.loteria.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

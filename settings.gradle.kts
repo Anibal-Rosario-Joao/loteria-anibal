@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Mega Sena v2"
+rootProject.name = "Loteria"
 include(":app")
  

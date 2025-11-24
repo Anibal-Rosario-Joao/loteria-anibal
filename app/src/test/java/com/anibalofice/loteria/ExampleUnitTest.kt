@@ -1,4 +1,4 @@
-package com.anibalofice.megasenav2
+package com.anibalofice.loteria
 
 import org.junit.Test
 

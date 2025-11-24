@@ -1,4 +1,4 @@
-package com.anibalofice.megasenav2
+package com.anibalofice.loteria
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

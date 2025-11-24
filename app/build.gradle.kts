@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.anibalofice.megasenav2"
+    namespace = "com.anibalofice.loteria"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.anibalofice.megasenav2"
+        applicationId = "com.anibalofice.loteria"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
