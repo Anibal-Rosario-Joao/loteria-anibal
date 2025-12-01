@@ -55,14 +55,14 @@ class MainActivity : ComponentActivity() {
 
                 NavHost(
                     navController = navController,
-                    startDestination = "home"
+                    startDestination = AppRouter.HOME.rota
                     ) {
-                    composable("home"){
+                    composable(AppRouter.HOME.rota){
                         HomeScreen{
-                          navController.navigate("lottery_form")
+                          navController.navigate(AppRouter.FORM.rota)
                         }
                     }
-                    composable ("lottery_form"){
+                    composable (AppRouter.FORM.rota){
                         FormScreen()
                     }
                 }
@@ -178,7 +178,11 @@ fun FormScreen(){
                         text = stringResource(R.string.quantity)
                     )
                 },
-                onValueChange = {}
+                onValueChange = { newNumber ->
+                    if (newNumber.length < 3){
+                        qtdNumbers = validatedInput(newNumber)
+                    }
+                }
             )
 
             OutlinedTextField(
@@ -198,7 +202,12 @@ fun FormScreen(){
                         text = stringResource(R.string.bets_quantity)
                     )
                 },
-                onValueChange = {}
+                onValueChange = { newBet ->
+                    if(newBet.length < 3){
+                        qtdBets = validatedInput(newBet)
+                    }
+
+                }
             )
 
             OutlinedButton(
@@ -212,6 +221,18 @@ fun FormScreen(){
         }
 
     }
+}
+
+private fun validatedInput(input:String):String{
+    val filteredChars = input.filter { character ->
+        character in "0123456789"
+    }
+    return filteredChars
+}
+
+enum class AppRouter(val rota: String){
+    HOME("home"),
+    FORM("form")
 }
 
 @Preview(showBackground = true)
