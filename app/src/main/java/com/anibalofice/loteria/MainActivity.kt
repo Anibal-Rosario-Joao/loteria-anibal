@@ -42,6 +42,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.anibalofice.loteria.components.LotItenType
+import com.anibalofice.loteria.components.LotNumberTextField
 import com.anibalofice.loteria.ui.theme.Green
 import com.anibalofice.loteria.ui.theme.LoteriaTheme
 
@@ -99,24 +101,11 @@ fun LotteryItem(name: String, clicavel:()-> Unit){
             clicavel()
         }
     ) {
-        Column (
-            modifier = Modifier
-                .background(Green)
-        ){
-            Image(
-                painter = painterResource(R.drawable.trevo),
-                contentDescription = "",
-                modifier = Modifier
-                    .size(100.dp)
-                    .padding(10.dp)
-            )
-            Text(
-                name,
-                color = Color.White,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-            )
-        }
+        LotItenType(
+            name = "Mega Sena",
+            bgColor = Green,
+            color = Color.White
+        )
     }
 
 }
@@ -137,21 +126,8 @@ fun FormScreen(){
             verticalArrangement = Arrangement.spacedBy(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Image(
-                painter = painterResource(R.drawable.trevo),
-                contentDescription = stringResource(R.string.trevo),
-                modifier = Modifier
-                    .size(100.dp)
-                    .padding(10.dp)
-            )
-
-            Text(
-                text = "Mega Sena",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
+            LotItenType(
+                name = "Mega Sena"
             )
 
             Text(
@@ -161,54 +137,28 @@ fun FormScreen(){
                     .padding(20.dp)
             )
 
-            OutlinedTextField(
+            LotNumberTextField(
                 value = qtdNumbers,
-                maxLines = 1,
-                label = {
-                    Text(
-                        text = stringResource(R.string.mega_rule)
-                    )
-                },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Next
-                ),
-                placeholder = {
-                    Text(
-                        text = stringResource(R.string.quantity)
-                    )
-                },
-                onValueChange = { newNumber ->
-                    if (newNumber.length < 3){
-                        qtdNumbers = validatedInput(newNumber)
-                    }
+                label = R.string.mega_rule,
+                placeholder = R.string.quantity,
+                keyboardAction = ImeAction.Next
+            ) { newNumber ->
+                if(newNumber.length < 3){
+                    qtdNumbers = validatedInput(newNumber)
                 }
-            )
+            }
 
-            OutlinedTextField(
+
+            LotNumberTextField(
                 value = qtdBets,
-                maxLines = 1,
-                label = {
-                    Text(
-                        text = stringResource(R.string.bets)
-                    )
-                },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Done
-                ),
-                placeholder = {
-                    Text(
-                        text = stringResource(R.string.bets_quantity)
-                    )
-                },
-                onValueChange = { newBet ->
-                    if(newBet.length < 3){
-                        qtdBets = validatedInput(newBet)
-                    }
-
+                label = R.string.bets,
+                placeholder = R.string.bets_quantity,
+                keyboardAction = ImeAction.Done
+            ) { newBet ->
+                if(newBet.length < 3){
+                    qtdBets = validatedInput(newBet)
                 }
-            )
+            }
 
             OutlinedButton(
                 onClick = {}
