@@ -17,7 +17,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -38,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
@@ -126,22 +129,32 @@ fun FormScreen(){
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background
     ){innerPadding ->
+        val errorBet = stringResource(R.string.error_bet)
+        val errorNumber =stringResource(R.string.error_number)
         var qtdNumbers by remember { mutableStateOf("") }
         var qtdBets by remember {mutableStateOf("")}
         var result by remember { mutableStateOf("") }
         val snackBarHostState by remember { mutableStateOf(SnackbarHostState()) }
         val scope = rememberCoroutineScope()
+        val keyboardController = LocalSoftwareKeyboardController.current
+        val scrollState = rememberScrollState()
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding),
+                .padding(innerPadding)
+                .verticalScroll(scrollState),
             verticalArrangement = Arrangement.spacedBy(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            LotItenType(
-                name = "Mega Sena"
-            )
+            Box(
+                modifier = Modifier
+                    .padding(top = 50.dp)
+            ) {
+                LotItenType(
+                    name = "Mega Sena"
+                )
+            }
 
             Text(
                 text = stringResource(R.string.annuncement),
@@ -176,20 +189,24 @@ fun FormScreen(){
             OutlinedButton(
                 enabled = qtdNumbers.isNotEmpty() && qtdBets.isNotEmpty(),
                 onClick = {
-                    if (qtdBets.toInt() < 1 || qtdBets.toInt() > 10){
+                    val bets = qtdBets.toInt()
+                    val numbers = qtdNumbers.toInt()
+
+                    if (bets < 1 || bets > 10){
                         scope.launch {
-                            snackBarHostState.showSnackbar("Máximo de caracter permitido: 10")
+                            snackBarHostState.showSnackbar(errorBet)
                         }
-                    }else if (qtdNumbers.toInt() < 1 || qtdNumbers.toInt() > 15){
+                    }else if (numbers < 1 || numbers > 15){
                         scope.launch {
-                            snackBarHostState.showSnackbar("Números devem ser de 6 á 15")
+                            snackBarHostState.showSnackbar(errorNumber)
                         }
                     }else{
                        result = ""
-                        for (i in 0..qtdBets.toInt()){
-                            result += "[$i] => ${numberGenerator(qtdNumbers)} \n\n"
+                        for (i in 0..bets){
+                            result += "[$i] => ${numberGenerator(numbers)} \n\n"
                         }
                     }
+                    keyboardController?.hide() // Hide Keyboard
                 }
             ) {
                 Text(text = stringResource(R.string.bets_generated))
@@ -211,13 +228,13 @@ fun FormScreen(){
     }
 }
 
-private fun numberGenerator(qtd:String):String{
+private fun numberGenerator(qtd: Int):String{
     val numbers: MutableSet<Int> = mutableSetOf()
 
     while (true){
         val n = Random.nextInt(60)
         numbers.add(n+1)
-        if(numbers.size == qtd.toInt()){
+        if(numbers.size == qtd){
             break
         }
     }

@@ -7,4 +7,6 @@
     <string name="bets">Quantidades  de Aposta</string>
     <string name="bets_quantity">Quantas Apostas irás tentar?</string>
     <string name="bets_generated">Gerar Apostas</string>
+    <string name="error_bet">Máximo de caracter permitido: 10</string>
+    <string name="error_number">Números devem ser de 6 á 15</string>
 </resources>
