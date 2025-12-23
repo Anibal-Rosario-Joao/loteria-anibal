@@ -17,9 +17,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -30,6 +38,7 @@ import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -55,8 +64,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.anibalofice.loteria.components.LotItenType
 import com.anibalofice.loteria.components.LotNumberTextField
+import com.anibalofice.loteria.model.MainItem
 import com.anibalofice.loteria.ui.theme.Green
 import com.anibalofice.loteria.ui.theme.LoteriaTheme
+import com.anibalofice.loteria.ui.theme.blueColor
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
@@ -73,12 +84,20 @@ class MainActivity : ComponentActivity() {
                     startDestination = AppRouter.HOME.rota
                     ) {
                     composable(AppRouter.HOME.rota){
-                        HomeScreen{
-                          navController.navigate(AppRouter.FORM.rota)
+                        HomeScreen{item ->
+                            val router = when(item.id){
+                                1 -> AppRouter.MEGA_SENA
+                                2 -> AppRouter.QUINA
+                                else -> AppRouter.HOME
+                            }
+                          navController.navigate(router.rota)
                         }
                     }
-                    composable (AppRouter.FORM.rota){
-                        FormScreen()
+                    composable (AppRouter.MEGA_SENA.rota){
+                        MegaSenaScreen()
+                    }
+                    composable (AppRouter.QUINA.rota){
+                        QuinaScreen()
                     }
                 }
             }
@@ -89,25 +108,34 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-fun HomeScreen(onClick:()-> Unit){
+fun HomeScreen(onClick:(MainItem)-> Unit){
+    val mainItems = mutableListOf<MainItem>(
+        MainItem(1,"Mega Sena",Green,R.drawable.trevo),
+        MainItem(2,"Quina", blueColor,R.drawable.trevo_blue)
+
+    )
     Scaffold (
         containerColor = MaterialTheme.colorScheme.background
     ){innerPadding ->
-        Column (
+        Row  (
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceAround
         ){
-            LotteryItem("Mega Sena", clicavel = onClick )
+            for (it in mainItems){
+                LotteryItem(it){
+                    onClick(it)
+                }
+            }
         }
 
     }
 }
 
 @Composable
-fun LotteryItem(name: String, clicavel:()-> Unit){
+fun LotteryItem(item: MainItem, clicavel:()-> Unit){
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
         onClick = {
@@ -115,8 +143,9 @@ fun LotteryItem(name: String, clicavel:()-> Unit){
         }
     ) {
         LotItenType(
-            name = "Mega Sena",
-            bgColor = Green,
+            name = item.name,
+            icon = item.icon,
+            bgColor = item.color,
             color = Color.White
         )
     }
@@ -125,14 +154,32 @@ fun LotteryItem(name: String, clicavel:()-> Unit){
 
 @Composable
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-fun FormScreen(){
+fun QuinaScreen(){
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background
-    ){innerPadding ->
+    ) { innerPadding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ){
+            Text(
+                text = "Heo Anibal !"
+            )
+        }
+    }
+}
+@Composable
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+fun MegaSenaScreen(){
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.background
+    ) { innerPadding ->
         val errorBet = stringResource(R.string.error_bet)
-        val errorNumber =stringResource(R.string.error_number)
+        val errorNumber = stringResource(R.string.error_number)
+        var showAlertDialog by remember { mutableStateOf(false) }
         var qtdNumbers by remember { mutableStateOf("") }
-        var qtdBets by remember {mutableStateOf("")}
+        var qtdBets by remember { mutableStateOf("") }
         var result by remember { mutableStateOf("") }
         val snackBarHostState by remember { mutableStateOf(SnackbarHostState()) }
         val scope = rememberCoroutineScope()
@@ -169,7 +216,7 @@ fun FormScreen(){
                 placeholder = R.string.quantity,
                 keyboardAction = ImeAction.Next
             ) { newNumber ->
-                if(newNumber.length < 3){
+                if (newNumber.length < 3) {
                     qtdNumbers = validatedInput(newNumber)
                 }
             }
@@ -181,7 +228,7 @@ fun FormScreen(){
                 placeholder = R.string.bets_quantity,
                 keyboardAction = ImeAction.Done
             ) { newBet ->
-                if(newBet.length < 3){
+                if (newBet.length < 3) {
                     qtdBets = validatedInput(newBet)
                 }
             }
@@ -192,19 +239,20 @@ fun FormScreen(){
                     val bets = qtdBets.toInt()
                     val numbers = qtdNumbers.toInt()
 
-                    if (bets < 1 || bets > 10){
+                    if (bets < 1 || bets > 10) {
                         scope.launch {
                             snackBarHostState.showSnackbar(errorBet)
                         }
-                    }else if (numbers < 1 || numbers > 15){
+                    } else if (numbers < 6 || numbers > 15) {
                         scope.launch {
                             snackBarHostState.showSnackbar(errorNumber)
                         }
-                    }else{
-                       result = ""
-                        for (i in 0..bets){
+                    } else {
+                        result = ""
+                        for (i in 0..bets) {
                             result += "[$i] => ${numberGenerator(numbers)} \n\n"
                         }
+                        showAlertDialog = !showAlertDialog
                     }
                     keyboardController?.hide() // Hide Keyboard
                 }
@@ -225,6 +273,40 @@ fun FormScreen(){
             )
         }
 
+        if (showAlertDialog) {
+            AlertDialog(
+                onDismissRequest = {},
+                confirmButton = {
+                    TextButton(
+                        onClick = { showAlertDialog = !showAlertDialog }
+                    ) {
+                        Text(
+                            text = stringResource(android.R.string.ok)
+                        )
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = { showAlertDialog = !showAlertDialog }
+                    ) {
+                        Text(
+                            text = stringResource(android.R.string.cancel)
+                        )
+                    }
+                },
+                title = {
+                    Text(
+                        text = stringResource(R.string.app_name)
+                    )
+                },
+                text = {
+                    Text(
+                        text = stringResource(R.string.good_luck)
+                    )
+                }
+                )
+
+        }
     }
 }
 
@@ -250,7 +332,8 @@ private fun validatedInput(input:String):String{
 
 enum class AppRouter(val rota: String){
     HOME("home"),
-    FORM("form")
+    MEGA_SENA("megasena"),
+    QUINA("quina")
 }
 
 @Preview(showBackground = true)
@@ -265,6 +348,6 @@ fun GreetingPreview() {
 @Composable
 fun FormPreview() {
     LoteriaTheme  {
-       FormScreen()
+       MegaSenaScreen()
     }
 }

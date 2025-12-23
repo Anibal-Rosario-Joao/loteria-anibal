@@ -1,5 +1,6 @@
 package com.anibalofice.loteria.components
 
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,7 +25,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.anibalofice.loteria.FormScreen
+import com.anibalofice.loteria.MegaSenaScreen
 import com.anibalofice.loteria.R
 import com.anibalofice.loteria.ui.theme.Green
 import com.anibalofice.loteria.ui.theme.LoteriaTheme
@@ -63,6 +64,7 @@ fun LotNumberTextField(
 @Composable
 fun LotItenType(
     name:String,
+    @DrawableRes icon: Int = R.drawable.trevo,
     bgColor: Color = Color.Transparent,
     color: Color = Color.Black
 
@@ -74,7 +76,7 @@ fun LotItenType(
             .background(bgColor)
     ) {
         Image(
-            painter = painterResource(R.drawable.trevo),
+            painter = painterResource(icon),
             contentDescription = stringResource(R.string.trevo),
             modifier = Modifier
                 .size(100.dp)
