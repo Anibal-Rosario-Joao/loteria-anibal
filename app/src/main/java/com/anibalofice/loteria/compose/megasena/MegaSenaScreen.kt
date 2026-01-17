@@ -24,16 +24,20 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.anibalofice.loteria.App
 import com.anibalofice.loteria.R
 import com.anibalofice.loteria.components.LotItenType
 import com.anibalofice.loteria.components.LotNumberTextField
+import com.anibalofice.loteria.data.Bet
 import com.anibalofice.loteria.ui.theme.LoteriaTheme
+import kotlinx.coroutines.Dispatchers
 
 import kotlinx.coroutines.launch
 import kotlin.random.Random
@@ -41,6 +45,9 @@ import kotlin.random.Random
 @Composable
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 fun MegaSenaScreen(){
+    //Listas das apostas guardadas q irao entrar no banco
+    val resultsToSave = mutableListOf<String>()
+    val db = (LocalContext.current.applicationContext as App).db
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
@@ -54,6 +61,8 @@ fun MegaSenaScreen(){
         val scope = rememberCoroutineScope()
         val keyboardController = LocalSoftwareKeyboardController.current
         val scrollState = rememberScrollState()
+
+
 
         Column(
             modifier = Modifier
@@ -81,7 +90,7 @@ fun MegaSenaScreen(){
 
             LotNumberTextField(
                 value = qtdNumbers,
-                label = R.string.mega_rule,
+                label = R.string.rule,
                 placeholder = R.string.quantity,
                 keyboardAction = ImeAction.Next
             ) { newNumber ->
@@ -118,8 +127,12 @@ fun MegaSenaScreen(){
                         }
                     } else {
                         result = ""
+                       resultsToSave.clear()
+
                         for (i in 0..bets) {
-                            result += "[$i] => ${numberGenerator(numbers)} \n\n"
+                            val res = numberGenerator(numbers)
+                            resultsToSave.add(res)
+                            result += "[$i] => $res \n\n"
                         }
                         showAlertDialog = !showAlertDialog
                     }
@@ -156,10 +169,20 @@ fun MegaSenaScreen(){
                 },
                 dismissButton = {
                     TextButton(
-                        onClick = { showAlertDialog = !showAlertDialog }
+                        onClick = {
+                            //Thread{
+                            scope.launch (Dispatchers.IO) {
+                                //Acontece a gravação no banco de dados
+                                for (res in resultsToSave) {
+                                val bet = Bet(type = "Mega_Sena", number = res)
+                                db.betDao().insert(bet)
+                                 }
+                                // }.start()
+                            }
+                            showAlertDialog = !showAlertDialog }
                     ) {
                         Text(
-                            text = stringResource(android.R.string.cancel)
+                            text = stringResource(R.string.save)
                         )
                     }
                 },

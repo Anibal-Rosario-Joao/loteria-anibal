@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Loteria</string>
     <string name="trevo">Trevo de 4 folha</string>
-    <string name="annuncement">Escola de 6 a 15 números para o App gerar 60 números. Ganhe com 5, 6 ou 4 acertos .\nSão realizados dois sorteio semanas para voce apostar e torcer para ficar milionario.</string>
-    <string name="mega_rule">De 6 a 15 números</string>
+    <string name="annuncement">Escolha de 6 a 15 números para o App gerar 60 números. Ganhe com 5, 6 ou 4 acertos .\nSão realizados dois sorteio semanas para voce apostar e torcer para ficar milionario.</string>
+    <string name="rule">De 6 a 15 números</string>
     <string name="quantity">Quantos números, irás apostar?</string>
     <string name="bets">Quantidades  de Aposta</string>
     <string name="bets_quantity">Quantas Apostas irás tentar?</string>
@@ -10,4 +10,5 @@
     <string name="error_bet">Máximo de caracter permitido: 10</string>
     <string name="error_number">Números devem ser de 6 á 15</string>
     <string name="good_luck">Boa Sorte</string>
+    <string name="save">Salvar</string>
 </resources>

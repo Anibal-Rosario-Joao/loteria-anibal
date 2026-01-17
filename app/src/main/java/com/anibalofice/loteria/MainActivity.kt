@@ -65,6 +65,8 @@ import androidx.navigation.compose.rememberNavController
 import com.anibalofice.loteria.components.LotItenType
 import com.anibalofice.loteria.components.LotNumberTextField
 import com.anibalofice.loteria.compose.LoteriaApp
+import com.anibalofice.loteria.data.AppDatabase
+import com.anibalofice.loteria.data.Bet
 import com.anibalofice.loteria.model.MainItem
 import com.anibalofice.loteria.ui.theme.Green
 import com.anibalofice.loteria.ui.theme.LoteriaTheme
