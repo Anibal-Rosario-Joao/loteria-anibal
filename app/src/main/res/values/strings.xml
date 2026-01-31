@@ -11,4 +11,6 @@
     <string name="error_number">Números devem ser de 6 á 15</string>
     <string name="good_luck">Boa Sorte</string>
     <string name="save">Salvar</string>
+    <string name="list_response">[%1d] [%2s] \n%3s</string>
+    <string name="bet_rule">Regra de Aposta</string>
 </resources>
