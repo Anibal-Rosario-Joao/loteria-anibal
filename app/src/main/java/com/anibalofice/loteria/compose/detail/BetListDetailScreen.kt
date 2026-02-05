@@ -90,11 +90,11 @@ fun BetListDetailScreen(type: String, context: Context= LocalContext.current, ba
 
 
             }
-            Thread{
-                val res = db.betDao().getNumbersByType(type)
-                bets.clear()
-                bets.addAll(res)
-            }.start()
+          //  Thread{
+            //    val res = db.betDao().getNumbersByType(type)
+           //     bets.clear()
+          //      bets.addAll(res)
+         //   }.start()
 
 
         }
