@@ -10,9 +10,9 @@ import kotlinx.coroutines.flow.Flow
 @Dao //Data Acces Object
 interface BetDao {
     @Insert
-    fun insert(bet: Bet)
+    suspend fun insert(bet: Bet)
     @Query("SELECT * FROM bets WHERE type = :betType")
-    fun getNumbersByType(betType: String): List<Bet>
+    suspend fun getNumbersByType(betType: String): List<Bet>
 
 
 

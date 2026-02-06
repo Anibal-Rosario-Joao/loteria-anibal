@@ -239,12 +239,11 @@ fun QuinaScreen(context: Context= LocalContext.current, clicado:(String) -> Unit
                 dismissButton = {
                     TextButton(
                         onClick = {
-                            Thread{
-                                for (res in saveBets) {
-                                    val bet = Bet(type = "quina", number = res)
-                                    db.betDao().insert(bet)
-                                }
-                            }.start()
+                       //     Thread{
+                       //         for (res in saveBets) {
+                         ///          db.betDao().insert(bet)
+                          //      }
+                          //  }.start()
 
                             showAlertDialog = false }
                     ) {

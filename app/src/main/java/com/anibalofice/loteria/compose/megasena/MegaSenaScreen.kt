@@ -242,13 +242,13 @@ fun MegaSenaScreen(context: Context= LocalContext.current, clicado:(String) -> U
                 dismissButton = {
                     TextButton(
                         onClick = {
-                            Thread{
+                         //   Thread{
 
-                                for (res in resultsToSave) {
-                                    val bet = Bet(type = "megassena", number = res)
-                                    db.betDao().insert(bet)
-                                }
-                            }.start()
+                         //       for (res in resultsToSave) {
+                          //          val bet = Bet(type = "megassena", number = res)
+                            //        db.betDao().insert(bet)
+                           //     }
+                           // }.start()
 
                             showAlertDialog = false
                         }

@@ -1,10 +1,10 @@
 package com.anibalofice.loteria.data
 
 class BetRepository(private val betDao: BetDao) {
-    fun getNumbersByType(betType: String): List<Bet> {
+    suspend fun getNumbersByType(betType: String): List<Bet> {
         return betDao.getNumbersByType(betType)
     }
-    fun insert(bet: Bet) {
+    suspend fun insert(bet: Bet) {
         betDao.insert(bet)
     }
 
@@ -12,7 +12,9 @@ class BetRepository(private val betDao: BetDao) {
         private var instance: BetRepository? = null
         fun getInstance(betDao: BetDao): BetRepository {
             return instance ?: synchronized(this) {
-                instance ?: BetRepository(betDao).also { instance = it }
+                instance ?: BetRepository(betDao).also {
+                    instance = it
+                }
             }
         }
 
