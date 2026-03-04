@@ -1,1 +1,1 @@
-Lottery App is an Android application developed with Kotlin and Jetpack Compose, featuring Mega-Sena and Quina games. It follows MVVM architecture, uses Material 3, Navigation Compose for navigation, and Room Database for local data persistence, applying modern Android development practices.
+Lottery App, Mega Sena and Quina Games
